@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bglemon.blue.taste.dao.AccountLogDao">
+  <resultMap id="BaseResultMap" type="com.bglemon.blue.taste.domain.AccountLog">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="log_type" jdbcType="INTEGER" property="logType" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="succeed" jdbcType="BIT" property="succeed" />
+  </resultMap>
+  <sql id="Base_Column_List">
+		id, log_type, user_id, ip, create_time, succeed
+  </sql>
+  <insert id="insert" parameterType="com.bglemon.blue.taste.domain.AccountLog">
+    insert into account_log (log_type, user_id, ip, create_time, succeed)
+    values (#{logType,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+      #{ip,jdbcType=VARCHAR}, now(), #{succeed,jdbcType=BIT}
+      )
+  </insert>
+
+  <select id="findByUserId" resultMap="BaseResultMap" parameterType="int">
+    select <include refid="Base_Column_List"/>
+    from account_log
+    where user_id = #{userId,jdbcType=INTEGER}
+    order by id desc
+  </select>
+
+  <select id="findByUserIdAndDate" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from account_log
+    where user_id = #{userId,jdbcType=INTEGER}
+    <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(date)">
+      and create_time like concat('%',#{date,jdbcType=VARCHAR},'%')
+    </if>
+    order by id desc
+  </select>
+
+  <select id="findByAccountAndDate" resultMap="BaseResultMap">
+    select l.*
+    from account_log l,auth_user u
+    where
+    <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(account)">
+      u.account = #{account,jdbcType=VARCHAR}  and
+    </if>
+    u.id = l.user_id
+    <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(date)">
+      and l.create_time like concat('%',#{date,jdbcType=VARCHAR},'%')
+    </if>
+    order by id desc
+  </select>
+
+</mapper>

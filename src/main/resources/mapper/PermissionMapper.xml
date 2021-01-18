@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bglemon.blue.taste.dao.PermissionDao">
+  <resultMap id="BaseResultMap" type="com.bglemon.blue.taste.domain.Permission">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="menu_icon" jdbcType="VARCHAR" property="menuIcon" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+    <result column="order_no" jdbcType="INTEGER" property="orderNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, permission, type, parent_id, description, url, menu_icon, create_time, update_time, deleted,order_no
+  </sql>
+  <insert id="insert" parameterType="com.bglemon.blue.taste.domain.Permission">
+    insert into auth_permission (permission, type,
+      parent_id, description, url,
+      create_time, update_time, deleted
+      )
+    values ( #{permission,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+      #{parentId,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}
+      )
+  </insert>
+  <select id="getPermissions" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select p.*
+    from auth_permission p, auth_role_permission rp
+    <where>
+      p.id = rp.permission_id
+      and rp.role_id = #{id}
+      <if test="type ==1 or type ==0">
+      and p.type = #{type}
+      </if>
+      and p.deleted=0
+      and rp.deleted=0
+      ORDER BY p.type,p.parent_id,p.order_no
+    </where>
+  </select>
+  <select id="getAllPermissions" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select p.*
+    from auth_permission p, auth_role_permission rp
+    <where>
+      p.id = rp.permission_id
+      and rp.role_id = #{id}
+      and p.deleted=0
+      and rp.deleted=0
+      ORDER BY p.type,p.parent_id,p.order_no
+    </where>
+  </select>
+  <select id="getPermissionsByRoleId" resultType="string" parameterType="int">
+    select p.permission
+    from auth_permission p left join auth_role_permission rp on p.id = rp.permission_id
+    <where>
+      rp.role_id = #{id}
+      and p.type =1
+      and p.deleted=0
+      and rp.deleted=0
+      ORDER BY p.type,p.parent_id,p.order_no
+    </where>
+  </select>
+
+  <update id="delete" parameterType="java.lang.Integer">
+    update auth_permission
+    set state =0
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

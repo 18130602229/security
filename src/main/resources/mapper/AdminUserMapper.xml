@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bglemon.blue.taste.dao.AdminUserDao">
+  <resultMap id="BaseResultMap" type="com.bglemon.blue.taste.domain.AdminUser">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+    <result column="enabled" jdbcType="BIT" property="enabled" />
+  </resultMap>
+  <resultMap id="userInfoWithRole" type="com.bglemon.blue.taste.domain.AdminUser" extends="BaseResultMap">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="salt" jdbcType="VARCHAR" property="salt" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+    <result column="enabled" jdbcType="BIT" property="enabled" />
+    <collection property="roleList" ofType="com.bglemon.blue.taste.domain.Role" >
+      <result column="rid" jdbcType="INTEGER" property="id" />
+      <result column="role" jdbcType="VARCHAR" property="role" />
+      <result column="role_type" jdbcType="INTEGER" property="roleType" />
+      <result column="description" jdbcType="VARCHAR" property="description" />
+      <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+      <result column="deleted" jdbcType="BIT" property="deleted" />
+    </collection>
+  </resultMap>
+  <sql id="base_column_list">
+    id, account, password, salt, create_time, update_time, deleted,enabled
+  </sql>
+  <insert id="save"  useGeneratedKeys="true" parameterType="com.bglemon.blue.taste.domain.AdminUser">
+    insert into auth_user (account, password,
+      salt, create_time)
+    values ( #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+      #{salt,jdbcType=VARCHAR}, now())
+  </insert>
+  <select id="findByAccount"  resultMap="BaseResultMap" parameterType="java.lang.String">
+    select <include refid="base_column_list"/>
+    from auth_user where account = #{account,jdbcType=VARCHAR}
+    and deleted = 0
+  </select>
+
+  <select id="findNumberByAccount"  resultType="int" parameterType="java.lang.String">
+    select count(*)
+    from auth_user where account = #{account,jdbcType=VARCHAR}
+    and deleted = 0
+  </select>
+
+  <select id="selectUserByUserNameWithRole" resultMap="userInfoWithRole" parameterType="java.lang.String">
+    SELECT
+    u.*,
+    r.id as rid,
+    r.role,
+    r.role_type,
+    r.description,
+    r.deleted
+    FROM auth_user u,auth_role r,auth_user_role  ru
+    <where>
+      u.account=#{account}
+      and u.id=ru.user_id
+      and r.id=ru.role_id
+      and r.deleted=0
+    </where>
+  </select>
+
+  <select id="getUsers" resultMap="userInfoWithRole"  parameterType="java.lang.String">
+    SELECT
+    u.*,
+    r.id as rid,
+    r.role,
+    r.role_type,
+    r.description,
+    r.deleted
+    FROM auth_user u,auth_role r,auth_user_role  ru
+    <where>
+      1 = 1
+      <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(account)">
+        and   u.account like concat('%',#{account,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(role)">
+        and r.role = #{role,jdbcType=VARCHAR}
+      </if>
+      and u.id=ru.user_id
+      and r.id=ru.role_id
+      and u.deleted= 0
+      and r.role != 'admin'
+    </where>
+    order by id desc
+  </select>
+
+  <update id="editPassword" parameterType="java.lang.String">
+    update auth_user set password = #{password}
+    <where>
+      account=#{account}
+      and deleted=0
+    </where>
+  </update>
+  <update id="resetPassword" parameterType="java.lang.Integer">
+    update auth_user set salt = #{salt},password = #{password}
+    <where>
+      id = #{id}
+    </where>
+  </update>
+
+
+  <update id="disabledUser" parameterType="java.lang.Integer">
+    update auth_user set enabled = !enabled
+    <where>
+      id = #{id}
+    </where>
+  </update>
+  <update id="removeUser" parameterType="java.lang.Integer">
+    update auth_user set deleted=1
+    <where>
+      id = #{id}
+    </where>
+  </update>
+  <update id="editAccount" parameterType="java.lang.String">
+    update auth_user set account=#{account}
+    <where>
+      id = #{id}
+    </where>
+  </update>
+  <select id="getAllUser"  resultMap="BaseResultMap">
+    select <include refid="base_column_list"/>
+    from auth_user where deleted = 0
+  </select>
+</mapper>

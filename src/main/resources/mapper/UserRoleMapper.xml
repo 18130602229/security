@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bglemon.blue.taste.dao.UserRoleDao">
+  <resultMap id="BaseResultMap" type="com.bglemon.blue.taste.domain.UserRole">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+  </resultMap>
+  <sql id="base_column_list">
+    id, user_id, role_id, create_time, deleted
+  </sql>
+  <insert id="insert" parameterType="com.bglemon.blue.taste.domain.UserRole">
+    insert into auth_user_role (user_id, role_id, create_time)
+    values (#{userId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER},
+     now())
+  </insert>
+  <select id="find" resultMap="BaseResultMap">
+    select <include refid="base_column_list"/>
+    from auth_user_role
+  </select>
+  <select id="findByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select <include refid="base_column_list"/>
+    from auth_user_role
+    where user_id = #{id}
+  </select>
+  <update id="editRole" parameterType="java.lang.String">
+    update auth_user_role set role_id=#{roleId}
+    <where>
+      user_id = #{id}
+    </where>
+  </update>
+</mapper>

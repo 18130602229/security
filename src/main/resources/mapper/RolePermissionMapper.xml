@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bglemon.blue.taste.dao.RolePermissionDao">
+  <resultMap id="BaseResultMap" type="com.bglemon.blue.taste.domain.RolePermission">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="permission_id" jdbcType="INTEGER" property="permissionId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+  </resultMap>
+  <sql id="base_column_list">
+    id, role_id, permission_id, create_time, deleted
+  </sql>
+  <insert id="insert" parameterType="com.bglemon.blue.taste.domain.RolePermission">
+    insert into auth_role_permission (role_id, permission_id,
+      create_time, deleted)
+    values ( #{roleId,jdbcType=INTEGER}, #{permissionId,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT})
+  </insert>
+  <insert id="batchSave" parameterType="java.util.List">
+    insert into auth_role_permission (role_id, permission_id,
+    create_time)
+    VALUES
+    <foreach collection="list" item="rolePermission" separator=",">
+      (#{rolePermission.roleId},#{rolePermission.permissionId},now())
+    </foreach>
+  </insert>
+
+  <update id="batchEdit"  parameterType="java.util.List">
+    <foreach collection="list" item="item" separator=";">
+      update auth_role_permission
+      set deleted = 1
+      where role_id = #{item.roleId}
+      and permission_id =#{item.permissionId}
+      and deleted = 0
+    </foreach>
+  </update>
+  <update id="remove" parameterType="java.lang.Integer">
+    update auth_role_permission
+    <set>
+      deleted = 1
+    </set>
+    where role_id = #{roleId}
+    and deleted = 0
+  </update>
+  <update id="edit" parameterType="java.lang.Integer">
+    update auth_role_permission
+      set deleted = 1
+      where role_id = #{roleId}
+      and permission_id =#{permissionId}
+      and deleted = 0
+  </update>
+</mapper>
