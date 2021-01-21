@@ -1,7 +1,10 @@
 package com.bglemon.blue.taste.dao;
 
 import com.bglemon.blue.taste.domain.Recharge;
+import com.bglemon.blue.taste.vo.RechargeVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
 * Interface
@@ -12,39 +15,17 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper()
 public interface RechargeDao {
-    /**
-     * 根据主键删除数据
-     * @param id
-     */
-    int deleteByPrimaryKey(Integer id);
 
-    /**
-     * 插入数据库记录（不建议使用）
-     * @param record
-     */
-    int insert(Recharge record);
+    void remove(Integer id);
 
-    /**
-     * 插入数据库记录（建议使用）
-     * @param record
-     */
-    int insertSelective(Recharge record);
+    void edit(RechargeVO rechargeVO);
 
-    /**
-     * 根据主键id查询
-     * @param id
-     */
-    Recharge selectByPrimaryKey(Integer id);
+    void save(RechargeVO rechargeVO);
 
-    /**
-     * 修改数据(推荐使用)
-     * @param record
-     */
-    int updateByPrimaryKeySelective(Recharge record);
+    Recharge getById(Integer id);
 
-    /**
-     * 修改数据
-     * @param record
-     */
-    int updateByPrimaryKey(Recharge record);
+    List getSearch(RechargeVO rechargeVO);
+
+    /* ============================ */
+
 }

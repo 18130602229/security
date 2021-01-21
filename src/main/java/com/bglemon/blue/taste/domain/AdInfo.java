@@ -16,7 +16,7 @@ import java.util.Date;
 */
 @ApiModel(value="com.bglemon.blue.taste.domain.adInfo",description="")
 @Data()
-public class adInfo {
+public class AdInfo {
     /**
      * 
 	* 列名:id 类型:INTEGER(10) 允许空:false 缺省值:null
@@ -46,7 +46,7 @@ public class adInfo {
      */
     @ApiModelProperty(value="广告标题",name="tittle")
     @Length(max = 255, message = "广告标题名长度最长为255")
-    private String tittle;
+    private String title;
 
     /**
      * 图片

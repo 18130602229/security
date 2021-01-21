@@ -1,7 +1,10 @@
 package com.bglemon.blue.taste.dao;
 
 import com.bglemon.blue.taste.domain.Tips;
+import com.bglemon.blue.taste.vo.TipsVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
 * Interface
@@ -12,6 +15,9 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper()
 public interface TipsDao {
+
+    List getTips(TipsVO tipsVO);
+    /* ============================ */
     /**
      * 根据主键删除数据
      * @param id

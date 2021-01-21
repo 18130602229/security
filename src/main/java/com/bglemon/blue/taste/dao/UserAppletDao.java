@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper()
 public interface UserAppletDao {
+    /* ============================ */
     /**
      * 根据主键删除数据
      * @param id

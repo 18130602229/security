@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -37,7 +38,7 @@ public class QueryRecord {
 	* 列名:customer_id 类型:INTEGER(10) 允许空:true 缺省值:null
      */
     @ApiModelProperty(value="客户ID",name="customerId")
-    private Integer customerId;
+    private String unionId;
 
     /**
      * ip 地址
@@ -52,14 +53,14 @@ public class QueryRecord {
 	* 列名:longitude 类型:DECIMAL(10) 允许空:true 缺省值:null
      */
     @ApiModelProperty(value="经度",name="longitude")
-    private Long longitude;
+    private BigDecimal longitude;
 
     /**
      * 纬度
 	* 列名:latitude 类型:DECIMAL(10) 允许空:true 缺省值:null
      */
     @ApiModelProperty(value="纬度",name="latitude")
-    private Long latitude;
+    private BigDecimal latitude;
 
     /**
      * 地址位置

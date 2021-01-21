@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
 */
 @ApiModel(value="com.bglemon.blue.taste.domain.Goods_stat",description="")
 @Data()
-public class Goods_stat {
+public class GoodsStat {
     /**
      * 
 	* 列名:id 类型:INTEGER(10) 允许空:false 缺省值:null

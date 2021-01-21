@@ -30,7 +30,7 @@ public class Tips {
      */
     @ApiModelProperty(value="客户ID",name="customerId")
     @Length(max = 255, message = "客户ID名长度最长为255")
-    private String customerId;
+    private String unionId;
 
     /**
      * 提示的文字

@@ -1,7 +1,10 @@
 package com.bglemon.blue.taste.dao;
 
 import com.bglemon.blue.taste.domain.QueryRecord;
+import com.bglemon.blue.taste.vo.QueryCordVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
 * Interface
@@ -12,12 +15,10 @@ import org.apache.ibatis.annotations.Mapper;
 */
 @Mapper()
 public interface QueryRecordDao {
-    /**
-     * 根据主键删除数据
-     * @param id
-     */
-    int deleteByPrimaryKey(Integer id);
 
+    List selectQueryCord(QueryCordVO queryCordVO);
+
+    /* ============================ */
     /**
      * 插入数据库记录（不建议使用）
      * @param record
@@ -47,4 +48,5 @@ public interface QueryRecordDao {
      * @param record
      */
     int updateByPrimaryKey(QueryRecord record);
+
 }
